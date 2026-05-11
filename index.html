@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   :root {
     --moon:    #e879f9;
     --inder:   #38bdf8;
@@ -25,589 +24,224 @@
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bot: env(safe-area-inset-bottom, 0px);
   }
-
-  html, body {
-    height: 100%; background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text); overflow: hidden;
-  }
-
-  #app {
-    display: flex; flex-direction: column;
-    height: 100dvh;
-    padding-top: var(--safe-top);
-    padding-bottom: var(--safe-bot);
-  }
-
-  /* ── HEADER ── */
-  #header {
-    padding: 14px 20px 10px;
-    background: rgba(8,12,20,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  html, body { height: 100%; background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); overflow: hidden; }
+  #app { display: flex; flex-direction: column; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bot); }
+  #header { padding: 14px 20px 10px; background: rgba(8,12,20,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
   #header h1 { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
   #header .sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  #sync-btn {
-    background: none; border: none; cursor: pointer;
-    font-size: 20px; padding: 4px; opacity: 0.6;
-    transition: opacity 0.2s, transform 0.4s;
-  }
+  #sync-btn { background: none; border: none; cursor: pointer; font-size: 20px; padding: 4px; opacity: 0.6; transition: opacity 0.2s, transform 0.4s; }
   #sync-btn.spinning { animation: spin 1s linear infinite; opacity: 1; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── MONTH STRIP ── */
-  #month-strip {
-    padding: 10px 16px 8px;
-    flex-shrink: 0;
-    background: rgba(8,12,20,0.6);
-  }
+  #month-strip { padding: 10px 16px 8px; flex-shrink: 0; background: rgba(8,12,20,0.6); }
   .year-row { display: flex; gap: 6px; margin-bottom: 8px; }
-  .year-btn {
-    flex:1; padding: 5px 0; border-radius: 8px; border: none; cursor: pointer;
-    background: var(--surface); color: var(--muted);
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
-    transition: all 0.15s;
-  }
+  .year-btn { flex:1; padding: 5px 0; border-radius: 8px; border: none; cursor: pointer; background: var(--surface); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; transition: all 0.15s; }
   .year-btn.active { background: rgba(255,255,255,0.14); color: var(--text); }
   .months-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 5px; }
-  .month-btn {
-    padding: 7px 2px; border-radius: 9px; border: none; cursor: pointer;
-    background: var(--surface); color: var(--muted);
-    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
-    transition: all 0.15s;
-  }
-  .month-btn.active {
-    color: #fff; font-weight: 800;
-  }
-
-  /* ── TABS ── */
-  #tabs {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px; padding: 8px 16px;
-    flex-shrink: 0;
-  }
-  .tab-btn {
-    border: none; cursor: pointer; border-radius: 14px;
-    padding: 11px 4px; background: var(--surface);
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    border-top: 2.5px solid transparent;
-    transition: all 0.2s;
-  }
+  .month-btn { padding: 7px 2px; border-radius: 9px; border: none; cursor: pointer; background: var(--surface); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; transition: all 0.15s; }
+  .month-btn.active { color: #fff; font-weight: 800; }
+  #tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 8px 16px; flex-shrink: 0; }
+  .tab-btn { border: none; cursor: pointer; border-radius: 14px; padding: 11px 4px; background: var(--surface); display: flex; flex-direction: column; align-items: center; gap: 2px; border-top: 2.5px solid transparent; transition: all 0.2s; }
   .tab-btn .t-emoji { font-size: 20px; }
   .tab-btn .t-label { font-size: 11px; font-weight: 800; }
   .tab-btn .t-val   { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
-  .tab-btn.active { }
-
-  /* ── VIEW TOGGLE ── */
-  #view-toggle {
-    display: flex; gap: 0; padding: 0 16px 8px;
-    flex-shrink: 0;
-  }
-  .view-btn {
-    flex:1; padding: 8px; border: 1px solid var(--border);
-    background: none; color: var(--muted); cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
-    transition: all 0.15s;
-  }
+  #view-toggle { display: flex; padding: 0 16px 8px; flex-shrink: 0; }
+  .view-btn { flex:1; padding: 8px; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; transition: all 0.15s; }
   .view-btn:first-child { border-radius: 10px 0 0 10px; }
   .view-btn:last-child  { border-radius: 0 10px 10px 0; border-left: none; }
   .view-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
-
-  /* ── SCROLL AREA ── */
   #scroll { flex: 1; overflow-y: auto; padding: 0 16px 24px; -webkit-overflow-scrolling: touch; }
-
-  /* ── ENTRY ── */
-  .entry-card {
-    border-radius: 20px; padding: 20px; margin-bottom: 10px;
-    border: 1px solid transparent;
-  }
-  .entry-card .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-  .card-icon {
-    width: 44px; height: 44px; border-radius: 13px;
-    display: flex; align-items: center; justify-content: center; font-size: 22px;
-  }
-  .card-title { font-size: 16px; font-weight: 800; }
+  .entry-card { border-radius: 20px; padding: 18px; margin-bottom: 10px; border: 1px solid transparent; }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .card-icon { width: 42px; height: 42px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 21px; }
+  .card-title { font-size: 15px; font-weight: 800; }
   .card-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .input-wrap { position: relative; }
-  .input-prefix {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    font-size: 22px; font-weight: 800; pointer-events: none;
-  }
-  .amount-input {
-    width: 100%; padding: 16px 14px 16px 38px;
-    border-radius: 13px; border: 2px solid transparent;
-    background: rgba(255,255,255,0.07); color: #fff;
-    font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 600;
-    outline: none; transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
+  .input-wrap { position: relative; margin-bottom: 10px; }
+  .input-prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 22px; font-weight: 800; pointer-events: none; }
+  .amount-input { width: 100%; padding: 14px 14px 14px 36px; border-radius: 13px; border: 2px solid transparent; background: rgba(255,255,255,0.07); color: #fff; font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 600; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
   .amount-input::placeholder { color: rgba(255,255,255,0.2); }
-
-  .subtotal-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    background: var(--surface); border-radius: 12px;
-    padding: 12px 16px; margin-bottom: 10px;
-    border: 1px solid var(--border);
-  }
+  .desc-wrap { position: relative; }
+  .desc-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; opacity: 0.5; }
+  .desc-input { width: 100%; padding: 11px 12px 11px 34px; border-radius: 11px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+  .desc-input::placeholder { color: rgba(255,255,255,0.22); font-weight: 400; }
+  .desc-input:focus { border-color: rgba(255,255,255,0.3); }
+  .subtotal-bar { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; border: 1px solid var(--border); }
   .subtotal-bar .st-label { font-size: 12px; color: var(--muted); }
   .subtotal-bar .st-val   { font-size: 21px; font-weight: 800; font-family: 'DM Mono', monospace; }
-
-  #save-btn {
-    width: 100%; padding: 16px; border-radius: 16px; border: none; cursor: pointer;
-    color: #fff; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 800;
-    transition: all 0.3s; margin-bottom: 4px;
-  }
-
-  /* ── SUMMARY ── */
-  .sum-card {
-    background: var(--surface); border-radius: 18px;
-    border: 1px solid var(--border); overflow: hidden; margin-bottom: 12px;
-  }
-  .sum-header {
-    padding: 12px 16px;
-    font-size: 10px; font-weight: 800; letter-spacing: 1.3px;
-    color: var(--muted); text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-  }
-  .sum-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
+  #save-btn { width: 100%; padding: 16px; border-radius: 16px; border: none; cursor: pointer; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 800; transition: all 0.3s; margin-bottom: 4px; }
+  .sum-card { background: var(--surface); border-radius: 18px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 12px; }
+  .sum-header { padding: 12px 16px; font-size: 10px; font-weight: 800; letter-spacing: 1.3px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .sum-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .sum-row:last-child { border-bottom: none; }
+  .sum-row .sr-left { display: flex; flex-direction: column; gap: 2px; }
   .sum-row .sr-label { font-size: 14px; font-weight: 700; }
-  .sum-row .sr-val   { font-size: 14px; font-weight: 800; font-family: 'DM Mono', monospace; }
+  .sum-row .sr-desc  { font-size: 11px; color: var(--muted); font-style: italic; }
+  .sum-row .sr-val   { font-size: 14px; font-weight: 800; font-family: 'DM Mono', monospace; white-space: nowrap; }
   .sum-row.sub { padding: 5px 16px 5px 30px; }
   .sum-row.sub .sr-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .sum-row.sub .sr-desc  { font-size: 10px; }
   .sum-row.sub .sr-val   { font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; }
   .sum-row.grand .sr-label { font-size: 15px; color: var(--muted); }
   .sum-row.grand .sr-val   { font-size: 26px; font-weight: 800; color: #fff; }
-
   .bar-row { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
-  .bar-row:last-child { border-bottom: none; }
   .bar-meta { display: flex; justify-content: space-between; margin-bottom: 5px; }
   .bar-meta .bm-month { font-size: 13px; color: var(--muted); }
   .bar-meta .bm-val   { font-size: 13px; font-weight: 700; font-family: 'DM Mono', monospace; }
   .bar-meta .bm-month.cur, .bar-meta .bm-val.cur { color: #fff; font-weight: 800; }
-  .stacked-bar {
-    height: 5px; background: rgba(255,255,255,0.07);
-    border-radius: 3px; overflow: hidden; display: flex;
-  }
-  .stacked-bar span { display: block; height: 100%; transition: width 0.4s; }
+  .stacked-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; display: flex; }
+  .stacked-bar span { display: block; height: 100%; }
   .bar-mini { display: flex; gap: 8px; margin-top: 3px; }
   .bar-mini span { font-size: 10px; font-family: 'DM Mono', monospace; }
-
   .yr-totals { padding: 14px 16px; background: rgba(255,255,255,0.02); }
   .yr-totals .yt-title { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.1px; margin-bottom: 8px; }
   .yr-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
   .yr-row .yr-label { font-size: 13px; font-weight: 700; }
   .yr-row .yr-val   { font-size: 13px; font-weight: 800; font-family: 'DM Mono', monospace; color: #fff; }
   .yr-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
-  .yr-grand { font-size: 15px !important; }
-  .yr-grand-val { font-size: 18px !important; }
-
-  /* toast */
-  #toast {
-    position: fixed; bottom: calc(30px + var(--safe-bot));
-    left: 50%; transform: translateX(-50%) translateY(20px);
-    background: rgba(30,35,50,0.95); border: 1px solid var(--border);
-    border-radius: 20px; padding: 10px 20px;
-    font-size: 13px; font-weight: 700; color: #fff;
-    opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap;
-    backdrop-filter: blur(12px);
-  }
+  #toast { position: fixed; bottom: calc(30px + var(--safe-bot)); left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(30,35,50,0.95); border: 1px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 13px; font-weight: 700; color: #fff; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; backdrop-filter: blur(12px); }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 <div id="app">
-
-  <!-- HEADER -->
   <div id="header">
     <div>
       <h1>💰 Family Budget</h1>
       <div class="sub" id="sync-status">Tap 🔄 to refresh</div>
     </div>
-    <button id="sync-btn" onclick="loadFromSheet()" title="Refresh">🔄</button>
+    <button id="sync-btn" onclick="loadFromSheet()">🔄</button>
   </div>
-
-  <!-- MONTH STRIP -->
   <div id="month-strip">
-    <div class="year-row" id="year-row"></div>
+    <div class="year-row"  id="year-row"></div>
     <div class="months-row" id="months-row"></div>
   </div>
-
-  <!-- TABS -->
   <div id="tabs"></div>
-
-  <!-- VIEW TOGGLE -->
   <div id="view-toggle">
     <button class="view-btn active" id="btn-entry"   onclick="setView('entry')">✏️ Entry</button>
     <button class="view-btn"        id="btn-summary" onclick="setView('summary')">📊 Summary</button>
   </div>
-
-  <!-- CONTENT -->
   <div id="scroll"></div>
 </div>
-
 <div id="toast"></div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbz1Pbwkdtk2NlfR04DP8UfN_VJUfdP2na_oJ4uqTT0QczF6taTx8B4Qgfjl3hgc30en/exec";
-
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const NOW    = new Date();
-const CY     = NOW.getFullYear();
-const CM     = NOW.getMonth();
-
+const CY = new Date().getFullYear();
+const CM = new Date().getMonth();
 const TABS = [
-  { id:"moon",    label:"Moon",   emoji:"👩", color:"#e879f9", glow:"rgba(232,121,249,0.35)" },
-  { id:"inder",   label:"Inder",  emoji:"👨", color:"#38bdf8", glow:"rgba(56,189,248,0.35)"  },
-  { id:"shared",  label:"Shared", emoji:"🏡", color:"#4ade80", glow:"rgba(74,222,128,0.35)"  },
+  { id:"moon",   label:"Moon",   emoji:"👩", color:"#e879f9", glow:"rgba(232,121,249,0.35)" },
+  { id:"inder",  label:"Inder",  emoji:"👨", color:"#38bdf8", glow:"rgba(56,189,248,0.35)"  },
+  { id:"shared", label:"Shared", emoji:"🏡", color:"#4ade80", glow:"rgba(74,222,128,0.35)"  },
 ];
 const SHARED_CATS = [
   { id:"grocery", label:"Grocery", emoji:"🛒", color:"#fb923c" },
   { id:"house",   label:"House",   emoji:"🏠", color:"#4ade80" },
 ];
 const ALL_IDS = ["moon","inder","grocery","house"];
-
 let state = {
-  year: CY, month: CM,
-  tab: "moon", view: "entry",
-  data: {}, // key -> amount
-  inputs: { moon:"", inder:"", grocery:"", house:"" },
+  year: CY, month: CM, tab: "moon", view: "entry",
+  data: {},
+  inputs: { moon:"", inder:"", grocery:"", house:"",
+            "moon-desc":"", "inder-desc":"", "grocery-desc":"", "house-desc":"" },
   saving: false,
 };
-
-function key(y, m, id) { return `${y}-${String(m).padStart(2,"0")}-${id}`; }
-function getVal(id, m, y) { return state.data[key(y ?? state.year, m ?? state.month, id)] || 0; }
-function fmt(v) {
-  return "$" + Number(v||0).toLocaleString("en-CA",{minimumFractionDigits:2,maximumFractionDigits:2});
-}
-function parse(s) { return parseFloat(String(s||"").replace(/[^0-9.]/g,"")) || 0; }
-
-function tabTotal(tabId, m, y) {
-  if (tabId === "shared") return getVal("grocery",m,y) + getVal("house",m,y);
-  return getVal(tabId,m,y);
-}
-function grandTotal(m, y) { return ALL_IDS.reduce((s,id)=>s+getVal(id,m,y),0); }
-function tabYearTotal(tabId, y) {
-  let t=0; for(let m=0;m<12;m++) t+=tabTotal(tabId,m,y); return t;
-}
+function amtKey(y,m,id)  { return y+"-"+String(m).padStart(2,"0")+"-"+id; }
+function descKey(y,m,id) { return y+"-"+String(m).padStart(2,"0")+"-"+id+"-desc"; }
+function getAmt(id,m,y)  { return state.data[amtKey(y??state.year,m??state.month,id)]||0; }
+function getDesc(id,m,y) { return state.data[descKey(y??state.year,m??state.month,id)]||""; }
+function fmt(v) { return "$"+Number(v||0).toLocaleString("en-CA",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function parse(s) { return parseFloat(String(s||"").replace(/[^0-9.]/g,""))||0; }
+function tabTotal(tabId,m,y) { if(tabId==="shared") return getAmt("grocery",m,y)+getAmt("house",m,y); return getAmt(tabId,m,y); }
+function grandTotal(m,y) { return ALL_IDS.reduce((s,id)=>s+getAmt(id,m,y),0); }
+function tabYearTotal(tabId,y) { let t=0; for(let m=0;m<12;m++) t+=tabTotal(tabId,m,y); return t; }
 function yearGrand(y) { let t=0; for(let m=0;m<12;m++) t+=grandTotal(m,y); return t; }
-
 function buildInputsFromData() {
-  const {year,month} = state;
-  state.inputs = {
-    moon:    state.data[key(year,month,"moon")]    !== undefined ? String(state.data[key(year,month,"moon")])    : "",
-    inder:   state.data[key(year,month,"inder")]   !== undefined ? String(state.data[key(year,month,"inder")])   : "",
-    grocery: state.data[key(year,month,"grocery")] !== undefined ? String(state.data[key(year,month,"grocery")]) : "",
-    house:   state.data[key(year,month,"house")]   !== undefined ? String(state.data[key(year,month,"house")])   : "",
-  };
+  const {year,month}=state; const inp={};
+  ALL_IDS.forEach(id=>{
+    inp[id]=state.data[amtKey(year,month,id)]!==undefined?String(state.data[amtKey(year,month,id)]):"";
+    inp[id+"-desc"]=state.data[descKey(year,month,id)]||"";
+  });
+  state.inputs=inp;
 }
-
-// ── API ──
 async function loadFromSheet() {
-  const btn = document.getElementById("sync-btn");
-  const st  = document.getElementById("sync-status");
-  btn.classList.add("spinning");
-  st.textContent = "Syncing…";
+  const btn=document.getElementById("sync-btn"), st=document.getElementById("sync-status");
+  btn.classList.add("spinning"); st.textContent="Syncing…";
   try {
-    const r = await fetch(API + "?action=get&t=" + Date.now());
-    const j = await r.json();
-    if (j.ok) {
-      state.data = j.data || {};
-      buildInputsFromData();
-      render();
-      st.textContent = "Updated " + new Date().toLocaleTimeString();
-    } else { st.textContent = "Sync error"; }
-  } catch(e) { st.textContent = "Offline"; }
+    const r=await fetch(API+"?action=get&t="+Date.now());
+    const j=await r.json();
+    if(j.ok){state.data=j.data||{};buildInputsFromData();render();st.textContent="Updated "+new Date().toLocaleTimeString();}
+    else st.textContent="Sync error";
+  } catch{st.textContent="Offline";}
   btn.classList.remove("spinning");
 }
-
 async function saveToSheet() {
-  if (state.saving) return;
-  state.saving = true;
-  setSaveBtnState("saving");
-  const {year, month} = state;
-
+  if(state.saving)return; state.saving=true; setSaveBtnState("saving");
+  const {year,month}=state;
   try {
-    const entries = ALL_IDS.map(id => ({
-      id, amount: parse(state.inputs[id]||"0")
-    }));
-
-    // fire all 4 saves in parallel
-    await Promise.all(entries.map(({id,amount}) =>
-      fetch(`${API}?action=set&year=${year}&month=${month}&category=${id}&amount=${amount}&t=${Date.now()}`)
-    ));
-
-    // update local data
-    entries.forEach(({id,amount}) => {
-      state.data[key(year,month,id)] = amount;
+    const calls=[];
+    ALL_IDS.forEach(id=>{
+      const amount=parse(state.inputs[id]||"0");
+      const desc=(state.inputs[id+"-desc"]||"").trim();
+      calls.push(fetch(API+"?action=set&year="+year+"&month="+month+"&category="+id+"&amount="+amount+"&desc="+encodeURIComponent(desc)+"&t="+Date.now()));
+      state.data[amtKey(year,month,id)]=amount;
+      state.data[descKey(year,month,id)]=desc;
     });
-
-    setSaveBtnState("saved");
-    showToast("✅ Saved to Google Sheets!");
-    setTimeout(()=>setSaveBtnState("idle"), 2000);
-  } catch(e) {
-    setSaveBtnState("idle");
-    showToast("❌ Save failed — check connection");
+    await Promise.all(calls);
+    setSaveBtnState("saved"); showToast("✅ Saved to Google Sheets!");
+    setTimeout(()=>setSaveBtnState("idle"),2000);
+  } catch{setSaveBtnState("idle");showToast("❌ Save failed");}
+  state.saving=false; renderTabs(); renderSummary();
+}
+function setSaveBtnState(s){
+  const btn=document.getElementById("save-btn"); if(!btn)return;
+  const t=TABS.find(t=>t.id===state.tab);
+  if(s==="saving"){btn.textContent="⏳ Saving…";btn.style.background="rgba(255,255,255,0.1)";}
+  else if(s==="saved"){btn.textContent="✅ Saved!";btn.style.background="linear-gradient(135deg,#34d399,#059669)";btn.style.boxShadow="0 4px 20px rgba(52,211,153,0.4)";}
+  else{btn.textContent="💾 Save to Google Sheets";btn.style.background="linear-gradient(135deg,"+t.color+","+t.color+"99)";btn.style.boxShadow="0 4px 20px "+t.glow;}
+}
+function showToast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2800);}
+function render(){renderYears();renderMonths();renderTabs();renderContent();}
+function renderYears(){const years=[CY-1,CY,CY+1];document.getElementById("year-row").innerHTML=years.map(y=>'<button class="year-btn '+(state.year===y?'active':'')+'" onclick="setYear('+y+'">'+y+'</button>').join("");}
+function renderMonths(){const t=TABS.find(t=>t.id===state.tab);document.getElementById("months-row").innerHTML=MONTHS.map((m,i)=>{const a=state.month===i;return '<button class="month-btn '+(a?'active':'')+'" style="'+(a?'background:'+t.color+'bb;box-shadow:0 2px 10px '+t.glow:'')+'" onclick="setMonth('+i+'">'+m+'</button>';}).join("");}
+function renderTabs(){document.getElementById("tabs").innerHTML=TABS.map(t=>{const a=state.tab===t.id;return '<button class="tab-btn '+(a?'active':'')+'" style="'+(a?'background:'+t.color+'20;border-top-color:'+t.color+';box-shadow:0 4px 18px '+t.glow:'')+'" onclick="setTab(''+t.id+''"><span class="t-emoji">'+t.emoji+'</span><span class="t-label" style="color:'+(a?t.color:'rgba(255,255,255,0.4)')+'">'+t.label+'</span><span class="t-val">'+fmt(tabTotal(t.id,state.month,state.year))+'</span></button>';}).join("");}
+function renderContent(){if(state.view==="entry")renderEntry();else renderSummary();}
+function inputCard(id,label,emoji,color,month,year,isSharedSub){
+  const amt=state.inputs[id]||"", desc=state.inputs[id+"-desc"]||"";
+  return '<div class="entry-card" style="background:'+color+'12;border-color:'+color+'28"><div class="card-header"><div class="card-icon" style="background:'+color+'25">'+emoji+'</div><div><div class="card-title">'+label+(isSharedSub?'':"\'s Personal")+'</div><div class="card-sub">'+(isSharedSub?'Shared · ':'')+MONTHS[month]+' '+year+'</div></div></div><div class="input-wrap"><span class="input-prefix" style="color:'+color+'">$</span><input class="amount-input" type="number" inputmode="decimal" placeholder="0.00" value="'+amt+'" style="border-color:'+color+'35" oninput="onInput(''+id+'',this.value)" onfocus="this.style.borderColor=''+color+''" onblur="this.style.borderColor=''+color+'35'"/></div><div class="desc-wrap"><span class="desc-icon">📝</span><input class="desc-input" type="text" placeholder="Description (e.g. Costco run, rent…)" value="'+desc.replace(/"/g,"&quot;")+'" oninput="onDescInput(''+id+'',this.value)" style="border-color:'+color+'20" onfocus="this.style.borderColor=''+color+'50'" onblur="this.style.borderColor=''+color+'20'"/></div></div>';
+}
+function renderEntry(){
+  const t=TABS.find(t=>t.id===state.tab); let html="";
+  if(state.tab==="moon"||state.tab==="inder"){html+=inputCard(state.tab,t.label,t.emoji,t.color,state.month,state.year,false);}
+  else{SHARED_CATS.forEach(cat=>{html+=inputCard(cat.id,cat.label,cat.emoji,cat.color,state.month,state.year,true);});}
+  const sub=state.tab==="shared"?parse(state.inputs.grocery||"0")+parse(state.inputs.house||"0"):parse(state.inputs[state.tab]||"0");
+  html+='<div class="subtotal-bar"><span class="st-label">'+t.label+' · '+MONTHS[state.month]+' total</span><span class="st-val" style="color:'+t.color+'">'+fmt(sub)+'</span></div><button id="save-btn" onclick="saveToSheet()" style="background:linear-gradient(135deg,'+t.color+','+t.color+'99);box-shadow:0 4px 20px '+t.glow+'">💾 Save to Google Sheets</button>';
+  document.getElementById("scroll").innerHTML=html;
+}
+function renderSummary(){
+  const {month,year}=state;
+  const moonV=getAmt("moon",month,year),moonD=getDesc("moon",month,year);
+  const inderV=getAmt("inder",month,year),inderD=getDesc("inder",month,year);
+  const groceryV=getAmt("grocery",month,year),groceryD=getDesc("grocery",month,year);
+  const houseV=getAmt("house",month,year),houseD=getDesc("house",month,year);
+  const sharedV=groceryV+houseV,total=moonV+inderV+sharedV;
+  function sumRow(label,color,val,desc,cls){cls=cls||"";return '<div class="sum-row '+cls+'"><div class="sr-left"><span class="sr-label" style="color:'+color+'">'+label+'</span>'+(desc?'<span class="sr-desc">'+desc+'</span>':'')+'</div><span class="sr-val">'+fmt(val)+'</span></div>';}
+  let html='<div class="sum-card"><div class="sum-header">'+MONTHS[month]+' '+year+' — Breakdown</div>'+sumRow("👩 Moon","#e879f9",moonV,moonD)+sumRow("👨 Inder","#38bdf8",inderV,inderD)+'<div class="sum-row" style="padding-bottom:4px"><div class="sr-left"><span class="sr-label" style="color:#4ade80">🏡 Shared</span></div><span class="sr-val">'+fmt(sharedV)+'</span></div>'+sumRow("🛒 Grocery","#fb923c",groceryV,groceryD,"sub")+sumRow("🏠 House","#4ade80",houseV,houseD,"sub")+'<div class="sum-row grand"><div class="sr-left"><span class="sr-label">Grand Total</span></div><span class="sr-val">'+fmt(total)+'</span></div></div>';
+  const allTotals=Array.from({length:12},(_,i)=>grandTotal(i,year));
+  const maxT=Math.max(...allTotals,1);
+  if(allTotals.some(v=>v>0)){
+    html+='<div class="sum-card"><div class="sum-header">'+year+' — Monthly</div>';
+    allTotals.forEach((t,i)=>{if(t===0)return;const mV=getAmt("moon",i,year),iV=getAmt("inder",i,year),gV=getAmt("grocery",i,year),hV=getAmt("house",i,year);const cur=i===month;html+='<div class="bar-row" onclick="goMonth('+i+')"><div class="bar-meta"><span class="bm-month '+(cur?'cur':'')+'">'+MONTHS[i]+'</span><span class="bm-val '+(cur?'cur':'')+'">'+fmt(t)+'</span></div><div class="stacked-bar"><span style="width:'+(mV/maxT*100)+'%;background:#e879f9"></span><span style="width:'+(iV/maxT*100)+'%;background:#38bdf8"></span><span style="width:'+(gV/maxT*100)+'%;background:#fb923c"></span><span style="width:'+(hV/maxT*100)+'%;background:#4ade80"></span></div><div class="bar-mini"><span style="color:#e879f9">👩'+fmt(mV)+'</span><span style="color:#38bdf8">👨'+fmt(iV)+'</span><span style="color:#4ade80">🏡'+fmt(gV+hV)+'</span></div></div>';});
+    html+='<div class="yr-totals"><div class="yt-title">'+year+' Year Totals</div><div class="yr-row"><span class="yr-label" style="color:#e879f9">👩 Moon</span><span class="yr-val">'+fmt(tabYearTotal("moon",year))+'</span></div><div class="yr-row"><span class="yr-label" style="color:#38bdf8">👨 Inder</span><span class="yr-val">'+fmt(tabYearTotal("inder",year))+'</span></div><div class="yr-row"><span class="yr-label" style="color:#4ade80">🏡 Shared</span><span class="yr-val">'+fmt(tabYearTotal("shared",year))+'</span></div><hr class="yr-divider"/><div class="yr-row"><span class="yr-label" style="color:rgba(255,255,255,0.6);font-size:15px">All '+year+'</span><span class="yr-val" style="font-size:18px">'+fmt(yearGrand(year))+'</span></div></div></div>';
   }
-  state.saving = false;
-  renderTabs();
-  renderSummary();
+  document.getElementById("scroll").innerHTML=html;
 }
-
-function setSaveBtnState(s) {
-  const btn = document.getElementById("save-btn");
-  if (!btn) return;
-  const t = TABS.find(t=>t.id===state.tab);
-  if (s === "saving") {
-    btn.textContent = "⏳ Saving…";
-    btn.style.background = "rgba(255,255,255,0.1)";
-  } else if (s === "saved") {
-    btn.textContent = "✅ Saved!";
-    btn.style.background = "linear-gradient(135deg,#34d399,#059669)";
-    btn.style.boxShadow  = "0 4px 20px rgba(52,211,153,0.4)";
-  } else {
-    btn.textContent = "💾 Save to Google Sheets";
-    btn.style.background = `linear-gradient(135deg,${t.color},${t.color}99)`;
-    btn.style.boxShadow  = `0 4px 20px ${t.glow}`;
-  }
-}
-
-function showToast(msg) {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"), 2800);
-}
-
-// ── RENDER ──
-function render() {
-  renderYears();
-  renderMonths();
-  renderTabs();
-  renderContent();
-}
-
-function renderYears() {
-  const years = [CY-1, CY, CY+1];
-  document.getElementById("year-row").innerHTML = years.map(y =>
-    `<button class="year-btn ${state.year===y?'active':''}" onclick="setYear(${y})">${y}</button>`
-  ).join("");
-}
-
-function renderMonths() {
-  const t = TABS.find(t=>t.id===state.tab);
-  document.getElementById("months-row").innerHTML = MONTHS.map((m,i) => {
-    const active = state.month===i;
-    return `<button class="month-btn ${active?'active':''}"
-      style="${active ? `background:${t.color}bb;box-shadow:0 2px 10px ${t.glow}` : ''}"
-      onclick="setMonth(${i})">${m}</button>`;
-  }).join("");
-}
-
-function renderTabs() {
-  document.getElementById("tabs").innerHTML = TABS.map(t => {
-    const active = state.tab===t.id;
-    const val = tabTotal(t.id, state.month, state.year);
-    return `<button class="tab-btn ${active?'active':''}"
-      style="${active ? `background:${t.color}20;border-top-color:${t.color};box-shadow:0 4px 18px ${t.glow}` : ''}"
-      onclick="setTab('${t.id}')">
-      <span class="t-emoji">${t.emoji}</span>
-      <span class="t-label" style="color:${active?t.color:'rgba(255,255,255,0.4)'}">${t.label}</span>
-      <span class="t-val">${fmt(val)}</span>
-    </button>`;
-  }).join("");
-}
-
-function renderContent() {
-  if (state.view === "entry") renderEntry();
-  else renderSummary();
-}
-
-function renderEntry() {
-  const t = TABS.find(t=>t.id===state.tab);
-  let html = "";
-
-  if (state.tab === "moon" || state.tab === "inder") {
-    const val = state.inputs[state.tab] || "";
-    html += `
-      <div class="entry-card" style="background:${t.color}12;border-color:${t.color}28">
-        <div class="card-header">
-          <div class="card-icon" style="background:${t.color}25">${t.emoji}</div>
-          <div>
-            <div class="card-title">${t.label}'s Personal</div>
-            <div class="card-sub">${MONTHS[state.month]} ${state.year}</div>
-          </div>
-        </div>
-        <div class="input-wrap">
-          <span class="input-prefix" style="color:${t.color}">$</span>
-          <input class="amount-input" id="inp-${t.id}" type="number" inputmode="decimal"
-            placeholder="0.00" value="${val}"
-            style="border-color:${t.color}35"
-            oninput="onInput('${t.id}',this.value)"
-            onfocus="this.style.borderColor='${t.color}'"
-            onblur="this.style.borderColor='${t.color}35'"/>
-        </div>
-      </div>`;
-  } else {
-    // shared
-    SHARED_CATS.forEach(cat => {
-      const val = state.inputs[cat.id] || "";
-      html += `
-        <div class="entry-card" style="background:${cat.color}12;border-color:${cat.color}28">
-          <div class="card-header">
-            <div class="card-icon" style="background:${cat.color}25">${cat.emoji}</div>
-            <div>
-              <div class="card-title">${cat.label}</div>
-              <div class="card-sub">Shared · ${MONTHS[state.month]} ${state.year}</div>
-            </div>
-          </div>
-          <div class="input-wrap">
-            <span class="input-prefix" style="color:${cat.color}">$</span>
-            <input class="amount-input" id="inp-${cat.id}" type="number" inputmode="decimal"
-              placeholder="0.00" value="${val}"
-              style="border-color:${cat.color}35"
-              oninput="onInput('${cat.id}',this.value)"
-              onfocus="this.style.borderColor='${cat.color}'"
-              onblur="this.style.borderColor='${cat.color}35'"/>
-          </div>
-        </div>`;
-    });
-  }
-
-  // subtotal
-  const sub = state.tab==="shared"
-    ? parse(state.inputs.grocery||"0") + parse(state.inputs.house||"0")
-    : parse(state.inputs[state.tab]||"0");
-
-  html += `
-    <div class="subtotal-bar">
-      <span class="st-label">${t.label} · ${MONTHS[state.month]} total</span>
-      <span class="st-val" style="color:${t.color}">${fmt(sub)}</span>
-    </div>
-    <button id="save-btn" onclick="saveToSheet()"
-      style="background:linear-gradient(135deg,${t.color},${t.color}99);box-shadow:0 4px 20px ${t.glow}">
-      💾 Save to Google Sheets
-    </button>`;
-
-  document.getElementById("scroll").innerHTML = html;
-}
-
-function renderSummary() {
-  const {month, year} = state;
-  const moonV    = getVal("moon",    month, year);
-  const inderV   = getVal("inder",  month, year);
-  const groceryV = getVal("grocery",month, year);
-  const houseV   = getVal("house",  month, year);
-  const sharedV  = groceryV + houseV;
-  const total    = moonV + inderV + sharedV;
-
-  let html = `
-    <div class="sum-card">
-      <div class="sum-header">${MONTHS[month]} ${year} — Breakdown</div>
-      <div class="sum-row">
-        <span class="sr-label" style="color:#e879f9">👩 Moon</span>
-        <span class="sr-val">${fmt(moonV)}</span>
-      </div>
-      <div class="sum-row">
-        <span class="sr-label" style="color:#38bdf8">👨 Inder</span>
-        <span class="sr-val">${fmt(inderV)}</span>
-      </div>
-      <div class="sum-row" style="padding-bottom:4px">
-        <span class="sr-label" style="color:#4ade80">🏡 Shared</span>
-        <span class="sr-val">${fmt(sharedV)}</span>
-      </div>
-      <div class="sum-row sub">
-        <span class="sr-label">🛒 Grocery</span>
-        <span class="sr-val" style="color:#fb923c">${fmt(groceryV)}</span>
-      </div>
-      <div class="sum-row sub">
-        <span class="sr-label">🏠 House</span>
-        <span class="sr-val" style="color:#4ade80">${fmt(houseV)}</span>
-      </div>
-      <div class="sum-row grand">
-        <span class="sr-label">Grand Total</span>
-        <span class="sr-val">${fmt(total)}</span>
-      </div>
-    </div>`;
-
-  // year bars
-  const allTotals = Array.from({length:12},(_,i)=>grandTotal(i,year));
-  const maxT = Math.max(...allTotals, 1);
-
-  const hasData = allTotals.some(v=>v>0);
-  if (hasData) {
-    html += `<div class="sum-card"><div class="sum-header">${year} — Monthly</div>`;
-    allTotals.forEach((t,i) => {
-      if (t===0) return;
-      const mV=getVal("moon",i,year), iV=getVal("inder",i,year);
-      const gV=getVal("grocery",i,year), hV=getVal("house",i,year);
-      const cur = i===month;
-      html += `
-        <div class="bar-row" onclick="goMonth(${i})">
-          <div class="bar-meta">
-            <span class="bm-month ${cur?'cur':''}">${MONTHS[i]}</span>
-            <span class="bm-val ${cur?'cur':''}">${fmt(t)}</span>
-          </div>
-          <div class="stacked-bar">
-            <span style="width:${(mV/maxT)*100}%;background:#e879f9"></span>
-            <span style="width:${(iV/maxT)*100}%;background:#38bdf8"></span>
-            <span style="width:${(gV/maxT)*100}%;background:#fb923c"></span>
-            <span style="width:${(hV/maxT)*100}%;background:#4ade80"></span>
-          </div>
-          <div class="bar-mini">
-            <span style="color:#e879f9">👩${fmt(mV)}</span>
-            <span style="color:#38bdf8">👨${fmt(iV)}</span>
-            <span style="color:#4ade80">🏡${fmt(gV+hV)}</span>
-          </div>
-        </div>`;
-    });
-
-    html += `
-      <div class="yr-totals">
-        <div class="yt-title">${year} Year Totals</div>
-        <div class="yr-row"><span class="yr-label" style="color:#e879f9">👩 Moon</span><span class="yr-val">${fmt(tabYearTotal("moon",year))}</span></div>
-        <div class="yr-row"><span class="yr-label" style="color:#38bdf8">👨 Inder</span><span class="yr-val">${fmt(tabYearTotal("inder",year))}</span></div>
-        <div class="yr-row"><span class="yr-label" style="color:#4ade80">🏡 Shared</span><span class="yr-val">${fmt(tabYearTotal("shared",year))}</span></div>
-        <hr class="yr-divider"/>
-        <div class="yr-row">
-          <span class="yr-label yr-grand" style="color:rgba(255,255,255,0.6)">All ${year}</span>
-          <span class="yr-val yr-grand-val">${fmt(yearGrand(year))}</span>
-        </div>
-      </div></div>`;
-  }
-
-  document.getElementById("scroll").innerHTML = html;
-}
-
-// ── STATE SETTERS ──
-function setYear(y)  { state.year=y;  buildInputsFromData(); render(); }
-function setMonth(m) { state.month=m; buildInputsFromData(); render(); }
-function setTab(id)  { state.tab=id;  render(); }
-function setView(v)  {
-  state.view=v;
-  document.getElementById("btn-entry").classList.toggle("active",   v==="entry");
-  document.getElementById("btn-summary").classList.toggle("active", v==="summary");
-  renderContent();
-}
-function goMonth(m)  { state.month=m; buildInputsFromData(); setView("entry"); render(); }
-function onInput(id, val) {
-  state.inputs[id] = val;
-  // update subtotal live
-  const t = TABS.find(t=>t.id===state.tab);
-  const sub = state.tab==="shared"
-    ? parse(state.inputs.grocery||"0") + parse(state.inputs.house||"0")
-    : parse(state.inputs[state.tab]||"0");
-  const el = document.querySelector(".st-val");
-  if (el) el.textContent = fmt(sub);
-}
-
-// ── BOOT ──
+function setYear(y){state.year=y;buildInputsFromData();render();}
+function setMonth(m){state.month=m;buildInputsFromData();render();}
+function setTab(id){state.tab=id;render();}
+function setView(v){state.view=v;document.getElementById("btn-entry").classList.toggle("active",v==="entry");document.getElementById("btn-summary").classList.toggle("active",v==="summary");renderContent();}
+function goMonth(m){state.month=m;buildInputsFromData();setView("entry");render();}
+function onInput(id,val){state.inputs[id]=val;const sub=state.tab==="shared"?parse(state.inputs.grocery||"0")+parse(state.inputs.house||"0"):parse(state.inputs[state.tab]||"0");const el=document.querySelector(".st-val");if(el)el.textContent=fmt(sub);}
+function onDescInput(id,val){state.inputs[id+"-desc"]=val;}
 render();
 loadFromSheet();
 </script>
